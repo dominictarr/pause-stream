@@ -3,7 +3,7 @@
 This is a `Stream` that will strictly buffer when paused.
 Connect it to anything you need buffered.
 
-```
+``` js
   var pause = require('pause-stream')();
   pause.pause()
   badlyBehavedStream.pipe(pause)
