@@ -9,37 +9,41 @@ var Stream = require('stream')
 */
 
 module.exports = function () {
-  var buffer = [], ended = false
+  var buffer = [], ended = false, destroyed = false
   var stream = new Stream() 
   stream.writable = stream.readable = true
   stream.paused = false 
   
-  stream.write = function (data) {{
+  stream.write = function (data) {
     if(!this.paused)
       this.emit('data', data)
     else 
       buffer.push(data)
     return !(this.paused || buffer.length)
   }
-
+  function onEnd () {
+    stream.readable = false
+    stream.emit('end')
+    process.nextTick(stream.destroy.bind(stream))
+  }
   stream.end = function (data) {
     if(data) this.write(data)
     this.ended = true
-    this.once('drain', function () {
-      stream.emit('end')
-      process.nextTick(stream.destroy.bind(stream))
-    })
+    this.writable = false
+    if(!(this.paused || buffer.length))
+      return onEnd()
+    
+    this.once('drain', onEnd)
     this.drain()
-  })
+  }
 
   stream.drain = function () {
     if(!buffer.length) return
     while(!this.paused && buffer.length)
       this.emit('data', buffer.shift())
     //if the buffer has emptied. emit drain.
-    if(!buffer.length) {
+    if(!buffer.length)
       this.emit('drain')
-    }
   }
 
   stream.resume = function () {
@@ -51,7 +55,8 @@ module.exports = function () {
     //the stream should never emit data inbetween pause()...resume()
     //and write should return !buffer.length
     this.paused = false
-    this.drain() //will emit drain if buffer empties.
+    process.nextTick(this.drain.bind(this)) //will emit drain if buffer empties.
+    return this
   }
 
   stream.destroy = function () {
@@ -59,10 +64,11 @@ module.exports = function () {
     destroyed = ended = true     
     buffer.length = 0
     this.emit('close')
-  })
+  }
 
   stream.pause = function () {
     stream.paused = true
+    return this
   }
  
   return stream
