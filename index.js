@@ -1,0 +1,69 @@
+var Stream = require('stream')
+
+/*
+  was gonna use through for this,
+  but it does not match quite right,
+  because you need a seperate pause
+  mechanism for the readable and writable
+  sides.
+*/
+
+module.exports = function () {
+  var buffer = [], ended = false
+  var stream = new Stream() 
+  stream.writable = stream.readable = true
+  stream.paused = false 
+  
+  stream.write = function (data) {{
+    if(!this.paused)
+      this.emit('data', data)
+    else 
+      buffer.push(data)
+    return !(this.paused || buffer.length)
+  }
+
+  stream.end = function (data) {
+    if(data) this.write(data)
+    this.ended = true
+    this.once('drain', function () {
+      stream.emit('end')
+      process.nextTick(stream.destroy.bind(stream))
+    })
+    this.drain()
+  })
+
+  stream.drain = function () {
+    if(!buffer.length) return
+    while(!this.paused && buffer.length)
+      this.emit('data', buffer.shift())
+    //if the buffer has emptied. emit drain.
+    if(!buffer.length) {
+      this.emit('drain')
+    }
+  }
+
+  stream.resume = function () {
+    //this is where I need pauseRead, and pauseWrite.
+    //here the reading side is unpaused,
+    //but the writing side may still be paused.
+    //the whole buffer might not empity at once.
+    //it might pause again.
+    //the stream should never emit data inbetween pause()...resume()
+    //and write should return !buffer.length
+    this.paused = false
+    this.drain() //will emit drain if buffer empties.
+  }
+
+  stream.destroy = function () {
+    if(destroyed) return
+    destroyed = ended = true     
+    buffer.length = 0
+    this.emit('close')
+  })
+
+  stream.pause = function () {
+    stream.paused = true
+  }
+ 
+  return stream
+}
