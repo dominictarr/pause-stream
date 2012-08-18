@@ -32,17 +32,16 @@ module.exports = function () {
     this.writable = false
     if(!(this.paused || buffer.length))
       return onEnd()
-    
-    this.once('drain', onEnd)
+    else
+      this.once('drain', onEnd)
     this.drain()
   }
 
   stream.drain = function () {
-    if(!buffer.length) return
     while(!this.paused && buffer.length)
       this.emit('data', buffer.shift())
     //if the buffer has emptied. emit drain.
-    if(!buffer.length)
+    if(!buffer.length && !this.paused)
       this.emit('drain')
   }
 
@@ -54,8 +53,10 @@ module.exports = function () {
     //it might pause again.
     //the stream should never emit data inbetween pause()...resume()
     //and write should return !buffer.length
+
     this.paused = false
-    process.nextTick(this.drain.bind(this)) //will emit drain if buffer empties.
+//    process.nextTick(this.drain.bind(this)) //will emit drain if buffer empties.
+    this.drain()
     return this
   }
 
