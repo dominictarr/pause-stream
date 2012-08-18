@@ -10,7 +10,7 @@
     "stream-spec": "~0.2.0"
   },
   "scripts": {
-    "test": "node test/index.js"
+    "test": "node test/index.js && node test/pause-end.js"
   },
   "repository": {
     "type": "git",
