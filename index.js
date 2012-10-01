@@ -9,7 +9,7 @@ var Stream = require('stream')
 */
 
 module.exports = function () {
-  var buffer = [], ended = false, destroyed = false
+  var buffer = [],  destroyed = false
   var stream = new Stream() 
   stream.writable = stream.readable = true
   stream.paused = false 
