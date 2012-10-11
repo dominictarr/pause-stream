@@ -62,7 +62,7 @@ module.exports = function () {
 
   stream.destroy = function () {
     if(destroyed) return
-    destroyed = ended = true     
+    destroyed = this.ended = true
     buffer.length = 0
     this.emit('close')
   }
