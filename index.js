@@ -24,7 +24,9 @@ module.exports = function () {
   function onEnd () {
     stream.readable = false
     stream.emit('end')
-    process.nextTick(stream.destroy.bind(stream))
+    process.nextTick(function () {
+      stream.destroy()  
+    })
   }
   stream.end = function (data) {
     if(data) this.write(data)
