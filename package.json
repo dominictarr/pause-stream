@@ -28,5 +28,8 @@
   "license": [
     "MIT",
     "Apache2"
-  ]
+  ],
+  "dependencies": {
+    "through": "~2.1"
+  }
 }
