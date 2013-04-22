@@ -1,6 +1,6 @@
 {
   "name": "pause-stream",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "a ThroughStream that strictly buffers all readable events when paused.",
   "main": "index.js",
   "directories": {
