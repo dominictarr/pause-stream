@@ -30,6 +30,6 @@
     "Apache2"
   ],
   "dependencies": {
-    "through": "~2.1"
+    "through": "~2.3"
   }
 }
