@@ -22,3 +22,8 @@ or the downstream emits `'drain'`
 
 `PauseStream` is tested using [stream-spec](https://github.com/dominictarr/stream-spec)
 and [stream-tester](https://github.com/dominictarr/stream-tester)
+
+This is now the default case of 
+[through](https://github.com/dominictarr/through)
+
+https://github.com/dominictarr/pause-stream/commit/4a6fe3dc2c11091b1efbfde912e0473719ed9cc0
