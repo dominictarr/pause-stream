@@ -15,7 +15,7 @@ Connect it to anything you need buffered.
 ```
 
 `PauseStream` will buffer whenever paused.
-it will buffer when yau have called `pause` manually.
+it will buffer when you have called `pause` manually.
 but also when it's downstream `dest.write()===false`.
 it will attempt to drain the buffer when you call resume
 or the downstream emits `'drain'`
