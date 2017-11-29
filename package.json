@@ -25,10 +25,7 @@
     "buffer"
   ],
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (dominictarr.com)",
-  "license": [
-    "MIT",
-    "Apache2"
-  ],
+  "license" : "(Apache-2.0 OR MIT)",
   "dependencies": {
     "through": "~2.3"
   }
